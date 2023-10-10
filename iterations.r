@@ -61,9 +61,30 @@ stations_metadata_df %>%
   GQL(., .url = configs$vegvesen_url) %>%
   transform_volumes() %>% 
   ggplot(aes(x=from, y=volume)) + 
-  geom_line() + 
+  geom_line() +
   theme_classic()
 
+### 6: making plot prettier
 
+# I'm splitting code from task 5 in two parts in order to access the traffic 
+# station name later on. 
+station <- stations_metadata_df %>% 
+  filter(latestData > Sys.Date() - days(7)) %>% 
+  sample_n(1)
+  
+station %$% 
+  vol_qry(
+    id = id,
+    from = to_iso8601(latestData, -4),
+    to = to_iso8601(latestData, 0)
+  ) %>% 
+  GQL(., .url = configs$vegvesen_url) %>%
+  transform_volumes() %>% 
+  ggplot(aes(x=from, y=volume)) + 
+  geom_line(aes(color = volume), size = 1) +
+  scale_color_gradient(low = "orange", high = "red")+
+  xlab("date") +
+  ggtitle(station$name) +
+  theme_classic()
 
 
