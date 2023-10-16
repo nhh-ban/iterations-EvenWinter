@@ -67,11 +67,12 @@ stations_metadata_df %>%
 ### 6: making plot prettier
 
 # I'm splitting code from task 5 in two parts in order to access the traffic 
-# station name later on. 
+# station name later on. This first part chooses a traffic station.
 station <- stations_metadata_df %>% 
   filter(latestData > Sys.Date() - days(7)) %>% 
   sample_n(1)
-  
+
+# This part creates and posts a query, transforms data, and then plots it.
 station %$% 
   vol_qry(
     id = id,
